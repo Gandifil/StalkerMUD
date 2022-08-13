@@ -10,16 +10,6 @@
 
         public List<Item> Items { get; } = new List<Item>();
 
-        public enum AttributeType
-        {
-            Health,
-            WeaponLevel,
-            Accuracy,
-            Dodge,
-            WeakExploit,
-            Speed
-        }
-
         public Dictionary<AttributeType, int> Attributes { get; }
         = new Dictionary<AttributeType, int> 
         { 
@@ -31,15 +21,10 @@
             { AttributeType.Speed, 5 },
         };
 
-        public static Dictionary<AttributeType, string> AttributeNames { get; }
-        = new ()
-        {
-            { AttributeType.Health, "Здоровье" },
-            { AttributeType.WeaponLevel, "Владение оружием" },
-            { AttributeType.Accuracy, "Точность" },
-            { AttributeType.Dodge, "Уклонение" },
-            { AttributeType.WeakExploit, "Знание противников" },
-            { AttributeType.Speed, "Скорость" },
-        };
+        public int MaxHP => 10 * Attributes[AttributeType.Health];
+
+        public int CritPercent => Attributes[AttributeType.WeakExploit] * 2;
+
+        public float CritFactor => 2.0f + 0.1f * Attributes[AttributeType.WeakExploit];
     }
 }

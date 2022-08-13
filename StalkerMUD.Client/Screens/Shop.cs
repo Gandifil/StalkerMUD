@@ -1,6 +1,6 @@
-﻿using StalkerMUD.Client.Network;
-using StalkerMUD.Client.UI;
+﻿using StalkerMUD.Client.UI;
 using StalkerMUD.Common;
+using StalkerMUD.Common.Models;
 
 namespace StalkerMUD.Client.Screens
 {
@@ -22,8 +22,7 @@ namespace StalkerMUD.Client.Screens
 
         public override ChoiceBox GenerateChoices()
         {
-            var server = new MockServer();
-            var shopPoints = server.SelectShopPoints().Result;
+            var shopPoints = new List<ShopPointResponse>();
 
 
             var actions = new List<ChoiceBox.Case>();

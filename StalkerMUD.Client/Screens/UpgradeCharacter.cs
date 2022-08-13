@@ -12,9 +12,9 @@ namespace StalkerMUD.Client.Screens
     {
         public override string Name => "Распределение очков характеристик";
 
-        public override string Description => Player.AttributeNames[CurrentAttribute];
+        public override string Description => Attributes.Names[CurrentAttribute];
 
-        public Player.AttributeType CurrentAttribute { get; set; } = Player.AttributeType.Health;
+        public AttributeType CurrentAttribute { get; set; } = AttributeType.Health;
 
         private readonly Game _game;
 
@@ -29,13 +29,13 @@ namespace StalkerMUD.Client.Screens
         protected override void Render()
         {
             Console.WriteLine($"Свободных очков: {_game.Player.AttributeFreePoints}");
-            Console.WriteLine($"Выбранная характеристика: {Player.AttributeNames[CurrentAttribute]}");
+            Console.WriteLine($"Выбранная характеристика: {Attributes.Names[CurrentAttribute]}");
         }
 
         public override ChoiceBox GenerateChoices()
         {
-            var cases = ((Player.AttributeType[])Enum.GetValues(typeof(Player.AttributeType)))
-                .Select(x => new ChoiceBox.Case($"{Player.AttributeNames[x]} - {_game.Player.Attributes[x]}")
+            var cases = ((AttributeType[])Enum.GetValues(typeof(AttributeType)))
+                .Select(x => new ChoiceBox.Case($"{Attributes.Names[x]} - {_game.Player.Attributes[x]}")
                 {
                     Action = () => { CurrentAttribute = x; },
                     Color = x == CurrentAttribute ? ConsoleColor.Green : ConsoleColor.Gray,

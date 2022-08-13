@@ -1,10 +1,5 @@
 ﻿using StalkerMUD.Client.UI;
 using StalkerMUD.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StalkerMUD.Client.Screens
 {
@@ -27,10 +22,13 @@ namespace StalkerMUD.Client.Screens
         protected override void Render()
         {
             Console.WriteLine($"Имя: {_game.Player.Name}");
-            foreach (Player.AttributeType attribute in (Player.AttributeType[])Enum.GetValues(typeof(Player.AttributeType)))
+            foreach (AttributeType attribute in (AttributeType[])Enum.GetValues(typeof(AttributeType)))
             {
-                Console.WriteLine($"{Player.AttributeNames[attribute]}: {_game.Player.Attributes[attribute]}");
+                Console.WriteLine($"{Attributes.Names[attribute]}: {_game.Player.Attributes[attribute]}");
             }
+            Console.WriteLine($"HP: {_game.Player.MaxHP}");
+            Console.WriteLine($"Шанс критического урона: {_game.Player.CritPercent}%");
+            Console.WriteLine($"Количество критического урона: {_game.Player.CritFactor * 100}%");
         }
 
         public override ChoiceBox GenerateChoices()
