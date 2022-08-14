@@ -20,7 +20,7 @@ namespace StalkerMUD.Client.Screens
                 {
                     Screen = new RegistrationScreen(),
                 },
-                new ChoiceBox.Case("Торговец")
+                new ChoiceBox.Case("Войти")
                 {
                     Screen = null,
                 },
