@@ -1,9 +1,4 @@
 ﻿using StalkerMUD.Client.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StalkerMUD.Client.Screens
 {
@@ -13,32 +8,33 @@ namespace StalkerMUD.Client.Screens
 
         public override string Description => "";
 
-        private readonly Game _game;
+        private readonly ScreenPlayer _screenPlayer;
 
-        private readonly Shop _shop;
-
-        public City(Game game)
+        public City( ScreenPlayer screenPlayer)
         {
-            _game = game;
-            _shop = new Shop(_game, this);
+            _screenPlayer = screenPlayer;
         }
 
-        public override ChoiceBox GenerateChoices()
+        public override void Show()
         {
-            return new ChoiceBox(new List<ChoiceBox.Case>{
+            base.Show();
+
+            var choices = new ChoiceBox(new List<ChoiceBox.Case>{
                 new ChoiceBox.Case("Арена")
                 {
-                    Screen = _shop,
+                    Action = () => _screenPlayer.AddNextScreen<City>(),
                 },
                 new ChoiceBox.Case("Персонаж")
                 {
-                    Screen = new CharacterView(_game, this),
+                    Action = () => _screenPlayer.AddNextScreen<City>(),
                 },
                 new ChoiceBox.Case("Торговец")
                 {
-                    Screen = _shop,
+                    Action = () => _screenPlayer.AddNextScreen<City>(),
                 },
             });
+
+            choices.Show();
         }
     }
 }

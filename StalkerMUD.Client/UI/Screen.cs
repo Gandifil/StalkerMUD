@@ -6,19 +6,22 @@ using System.Threading.Tasks;
 
 namespace StalkerMUD.Client.UI
 {
-    internal abstract class Screen
+    internal interface IScreen
+    {
+        void Show();
+    }
+
+    internal abstract class Screen : IScreen
     {
         public abstract string Name { get; }
 
         public abstract string Description { get; }
 
-        //public ChoiceBox Choices { get; set; }
+        public virtual ChoiceBox GenerateChoices() { return null; }
 
-        public abstract ChoiceBox GenerateChoices();
-
-        public Screen Show()
+        public virtual void Show()
         {
-            start:
+        //start:
             Console.Clear();
 
             if (!string.IsNullOrEmpty(Name))
@@ -27,34 +30,25 @@ namespace StalkerMUD.Client.UI
             if (!string.IsNullOrEmpty(Description))
                 Console.WriteLine(Description);
 
-            Render();
-
-            var choices = GenerateChoices();
-            try
-            {
-                return choices.Show();
-            }
-            catch (Exception e)
-            {
-                Console.Clear();
-                Console.WriteLine("Неверный ввод! Попробуйте снова!");
-#if DEBUG
-                Console.WriteLine(e.Message);
-#endif
-                goto start;
-            }
+//            var choices = GenerateChoices();
+//            try
+//            {
+//                return choices.Show();
+//            }
+//            catch (Exception e)
+//            {
+//                Console.Clear();
+//                Console.WriteLine("Неверный ввод! Попробуйте снова!");
+//#if DEBUG
+//                Console.WriteLine(e.Message);
+//#endif
+//                goto start;
+//            }
         }
 
-        protected virtual void Render()
+        protected void Error(string message)
         {
 
-        }
-
-        public static void StartShowCycle(Screen startScreen)
-        {
-            var screen = startScreen;
-            while (true)
-                screen = screen.Show() ?? screen;
         }
     }
 }

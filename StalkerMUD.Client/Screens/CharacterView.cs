@@ -19,8 +19,10 @@ namespace StalkerMUD.Client.Screens
             _backScreen = backScreen;
         }
 
-        protected override void Render()
+        public override void Show()
         {
+            base.Show();
+
             Console.WriteLine($"Имя: {_game.Player.Name}");
             foreach (AttributeType attribute in (AttributeType[])Enum.GetValues(typeof(AttributeType)))
             {

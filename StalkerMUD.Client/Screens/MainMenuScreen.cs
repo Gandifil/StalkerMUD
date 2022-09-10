@@ -1,4 +1,5 @@
-﻿using StalkerMUD.Client.UI;
+﻿using StalkerMUD.Client.Screens.Auth;
+using StalkerMUD.Client.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,18 +14,29 @@ namespace StalkerMUD.Client.Screens
 
         public override string Description => string.Empty;
 
-        public override ChoiceBox GenerateChoices()
+        private readonly ScreenPlayer _screenPlayer;
+
+        public MainMenuScreen(ScreenPlayer screenPlayer)
         {
-            return new ChoiceBox(new List<ChoiceBox.Case>{
+            _screenPlayer = screenPlayer;
+        }
+
+        public override void Show()
+        {
+            base.Show();
+
+            var choices = new ChoiceBox(new List<ChoiceBox.Case>{
                 new ChoiceBox.Case("Зарегистрироваться")
                 {
-                    Screen = new RegistrationScreen(),
+                    Action = () => _screenPlayer.AddNextScreen<RegistrationScreen>(),
                 },
                 new ChoiceBox.Case("Войти")
                 {
-                    Screen = null,
+                    Action = () => _screenPlayer.AddNextScreen<LoginScreen>(),
                 },
             });
+
+            choices.Show();
         }
     }
 }

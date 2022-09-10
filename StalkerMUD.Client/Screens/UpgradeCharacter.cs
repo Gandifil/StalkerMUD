@@ -26,8 +26,10 @@ namespace StalkerMUD.Client.Screens
             _backScreen = backScreen;
         }
 
-        protected override void Render()
+        public override void Show()
         {
+            base.Show();
+
             Console.WriteLine($"Свободных очков: {_game.Player.AttributeFreePoints}");
             Console.WriteLine($"Выбранная характеристика: {Attributes.Names[CurrentAttribute]}");
         }

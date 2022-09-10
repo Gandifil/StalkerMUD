@@ -32,6 +32,10 @@ namespace StalkerMUD.Server.Services
 
         public async Task<AuthenticateResponse> RegisterAsync(AuthenticateRequest request)
         {
+            if (request.Username?.Length < 5 ||
+                request.Password?.Length < 5)
+                throw new InvalidDataException();
+
             var user = new User()
             {
                 Name = request.Username,
@@ -70,7 +74,6 @@ namespace StalkerMUD.Server.Services
 
         private string GenerateToken(User user)
         {
-            // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_settings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
