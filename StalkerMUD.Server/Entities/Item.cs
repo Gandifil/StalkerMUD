@@ -1,4 +1,6 @@
-﻿namespace StalkerMUD.Server.Entities
+﻿using StalkerMUD.Common;
+
+namespace StalkerMUD.Server.Entities
 {
     public class Item
     {
@@ -6,6 +8,14 @@
 
         public string Name { get; set; }
 
-        public string Description { get; set;}
+        public ItemType Type { get; set; }
+
+        public int Health { get; set; }
+
+        public int Resistance { get; set; }
+
+        public int Damage { get; set; }
+
+        public int Rounds { get; set; }
     }
 }
