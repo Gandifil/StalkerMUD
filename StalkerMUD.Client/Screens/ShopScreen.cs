@@ -29,8 +29,9 @@ namespace StalkerMUD.Client.Screens
             foreach (var shopPoint in items)
             {
                 var cost = shopPoint.Cost;
-                actions.Add(new ChoiceBox.Case($"{shopPoint.Name} - {cost} руб")
+                actions.Add(new ChoiceBox.Case()
                 {
+                    Name = $"{shopPoint.Name} - {cost} руб",
                     Action = () => { 
                         Buy(shopPoint.Id);
                         _screenPlayer.Restart();
@@ -40,10 +41,7 @@ namespace StalkerMUD.Client.Screens
             }
             return new ChoiceBox(actions)
             {
-                BackCase = new ChoiceBox.Case("")
-                {
-                    Action = () => { _screenPlayer.AddNextScreen<City>(); },
-                },
+                BackCase = new ChoiceBox.Case(() =>  _screenPlayer.AddNextScreen<City>()),
             };
         }
 

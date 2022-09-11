@@ -26,14 +26,8 @@ namespace StalkerMUD.Client.Screens
             base.Show();
 
             var choices = new ChoiceBox(new List<ChoiceBox.Case>{
-                new ChoiceBox.Case("Зарегистрироваться")
-                {
-                    Action = () => _screenPlayer.AddNextScreen<RegistrationScreen>(),
-                },
-                new ChoiceBox.Case("Войти")
-                {
-                    Action = () => _screenPlayer.AddNextScreen<LoginScreen>(),
-                },
+                new ChoiceBox.Case(() => _screenPlayer.AddNextScreen<RegistrationScreen>(), "Зарегистрироваться"),
+                new ChoiceBox.Case(() => _screenPlayer.AddNextScreen<LoginScreen>(), "Войти"),
             });
 
             choices.Show();

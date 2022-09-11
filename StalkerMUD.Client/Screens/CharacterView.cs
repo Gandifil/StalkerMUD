@@ -38,16 +38,10 @@ namespace StalkerMUD.Client.Screens
 
         public override ChoiceBox GenerateChoices()
         {
-            return new ChoiceBox(
-                new ChoiceBox.Case("Изменить характеристики")
-                {
-                    Action = () => _screenPlayer.AddNextScreen<UpgradeCharacter>(),
-                })
+            return new ChoiceBox(new ChoiceBox.Case(() => _screenPlayer.AddNextScreen<UpgradeCharacter>(), 
+                "Изменить характеристики"))
             {
-                BackCase = new ChoiceBox.Case("")
-                {
-                    Action = () => _screenPlayer.AddNextScreen<City>(),
-                }
+                BackCase = new ChoiceBox.Case(() => _screenPlayer.AddNextScreen<City>())
             };
         }
     }

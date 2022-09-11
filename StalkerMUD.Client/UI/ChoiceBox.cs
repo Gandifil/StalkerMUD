@@ -8,16 +8,22 @@ namespace StalkerMUD.Client.UI
 
         public class Case
         {
-            public string Name { get; }
+            public string Name { get; set; }
 
-            public Action? Action { get; set; }
+            public Action Action { get; set; }
 
             public bool IsEnabled { get; set; } = true;
 
             public ConsoleColor Color { get; set; } = ConsoleColor.Gray;
 
-            public Case(string name)
+            public Case()
             {
+
+            }
+
+            public Case(Action action, string name = null)
+            {
+                Action = action;
                 Name = name;
             }
         }
