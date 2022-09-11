@@ -9,10 +9,10 @@ namespace StalkerMUD.Client.Screens
 
         public override string Description => "";
 
-        private readonly PlayerClient _playerClient;
+        private readonly IPlayerClient _playerClient;
         private readonly ScreenPlayer _screenPlayer;
 
-        public CharacterView(PlayerClient playerClient, ScreenPlayer screenPlayer)
+        public CharacterView(IPlayerClient playerClient, ScreenPlayer screenPlayer)
         {
             _playerClient = playerClient;
             _screenPlayer = screenPlayer;

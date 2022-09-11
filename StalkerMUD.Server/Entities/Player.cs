@@ -6,8 +6,8 @@ namespace StalkerMUD.Server.Entities
     {
         public class ItemPack
         {
-            public int Id;
-            public int Count;
+            public int Id { get; set; }
+            public int Count { get; set; }
         }
 
         public Dictionary<int, ItemPack> Items { get; set; } = new();
@@ -24,7 +24,7 @@ namespace StalkerMUD.Server.Entities
                 Items.Add(itemId, new ItemPack { Id = itemId, Count = 1 });
         }
 
-        public Dictionary<AttributeType, int> Attributes { get; }
+        public Dictionary<AttributeType, int> Attributes { get; set; }
         = new Dictionary<AttributeType, int>
         {
             { AttributeType.Health, 5 },

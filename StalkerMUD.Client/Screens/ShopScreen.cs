@@ -10,12 +10,12 @@ namespace StalkerMUD.Client.Screens
 
         public override string Description => $"Деньги: {_money}";
 
-        private readonly PlayerClient _playerClient;
+        private readonly IPlayerClient _playerClient;
         private readonly ShopsClient _shopsClient;
         private readonly ScreenPlayer _screenPlayer;
         private int _money;
 
-        public ShopScreen(PlayerClient client, ShopsClient shopsClient, ScreenPlayer screenPlayer)
+        public ShopScreen(IPlayerClient client, ShopsClient shopsClient, ScreenPlayer screenPlayer)
         {
             _playerClient = client;
             _shopsClient = shopsClient;

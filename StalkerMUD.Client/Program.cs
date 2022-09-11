@@ -25,7 +25,7 @@ var host = Host.CreateDefaultBuilder(args)
             client.JsonSerializerSettings.PropertyNameCaseInsensitive = true;
             return client;
         });
-        services.AddScoped(services =>
+        services.AddScoped<IPlayerClient>(services =>
         {
             var connectionState = services.GetRequiredService<ConnectionState>();
             var httpClient = new HttpClient();

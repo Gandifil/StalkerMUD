@@ -64,6 +64,22 @@ namespace StalkerMUD.Server.Controllers
             else throw new ArgumentOutOfRangeException();
         }
 
+        [HttpPost]
+        [Route("upgrade")]
+        public async Task Buy([FromBody] UpgradeRequest upgradeRequest)
+        {
+            int userId = GetUserId();
+            var user = await _users.GetAsync(userId);
+            var player = user.Player;
+            if (player.AttributeFreePoints > 0)
+            {
+                player.AttributeFreePoints--;
+                player.Attributes[upgradeRequest.Attribute]++;
+                await _users.UpdateAsync(user);
+            }
+            else throw new ArgumentOutOfRangeException();
+        }
+
         private int GetUserId()
         {
             return Convert.ToInt32(_httpContextAccessor.HttpContext?.User.Identities.First().Claims.First(x => x.Type == "id").Value);
