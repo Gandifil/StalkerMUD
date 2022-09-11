@@ -44,7 +44,7 @@ namespace StalkerMUD.Client.Screens
                 });
             return new ChoiceBox(cases.ToArray())
             {
-                BackScreen = _backScreen,
+                //BackScreen = _backScreen,
                 EnterCase = new ChoiceBox.Case("Увеличить")
                 {
                     Action = UpgradeAttribute,

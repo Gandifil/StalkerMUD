@@ -42,7 +42,7 @@ builder.Services.AddSwaggerGen(c => {
         }
     });
 });
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IShopsService, ShopsService>();

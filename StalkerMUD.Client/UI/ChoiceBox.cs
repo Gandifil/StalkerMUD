@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace StalkerMUD.Client.UI
 {
@@ -19,8 +14,6 @@ namespace StalkerMUD.Client.UI
 
             public bool IsEnabled { get; set; } = true;
 
-            public Screen? Screen { get; set; }
-
             public ConsoleColor Color { get; set; } = ConsoleColor.Gray;
 
             public Case(string name)
@@ -31,7 +24,7 @@ namespace StalkerMUD.Client.UI
 
         private readonly List<Case> _cases;
 
-        public Screen? BackScreen { get; set; }
+        public Case? BackCase { get; set; }
 
         public Case? EnterCase { get; set; }
 
@@ -45,9 +38,9 @@ namespace StalkerMUD.Client.UI
             _cases = cases.ToList();
         }
 
-        public Screen Show()
+        public Case Show()
         {
-            if (BackScreen is not null)
+            if (BackCase is not null)
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine($"{QUIT_KEY}. Назад");
@@ -66,19 +59,18 @@ namespace StalkerMUD.Client.UI
             }
             Console.ForegroundColor = ConsoleColor.Gray;
 
-            var key = Console.ReadKey();
-            if (BackScreen is not null && (key.KeyChar == QUIT_KEY || key.KeyChar == 'й'))
-                return BackScreen;
-
-            Case scase = GetSelectedCase(key);
+            var scase = GetSelectedCase(Console.ReadKey());
             scase.Action?.Invoke();
-            return scase.Screen;
+            return scase;
         }
 
         private Case GetSelectedCase(ConsoleKeyInfo key)
         {
             if (EnterCase is not null && key.Key == ConsoleKey.Enter)
                 return EnterCase;
+
+            if (BackCase is not null && (key.KeyChar == QUIT_KEY || key.KeyChar == 'й'))
+                return BackCase;
 
             return _cases[int.Parse(key.KeyChar.ToString()) - 1];
         }

@@ -35,9 +35,9 @@ namespace StalkerMUD.Client.Screens
 
         public override ChoiceBox GenerateChoices()
         {
-            return new ChoiceBox(new ChoiceBox.Case("Изменить хар-ки") { Screen = new UpgradeCharacter(_game, this)})
+            return new ChoiceBox(new ChoiceBox.Case("Изменить хар-ки") { })
             {
-                BackScreen = _backScreen,
+                //BackScreen = _backScreen,Screen = new UpgradeCharacter(_game, this)
             };
         }
     }

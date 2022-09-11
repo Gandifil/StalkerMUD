@@ -42,5 +42,10 @@ namespace StalkerMUD.Server.Data
             var all = await SelectAsync(predicate);
             return all.Single();
         }
+
+        public Task UpdateAsync(T entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

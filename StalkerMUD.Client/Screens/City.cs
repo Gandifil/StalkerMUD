@@ -30,7 +30,7 @@ namespace StalkerMUD.Client.Screens
                 },
                 new ChoiceBox.Case("Торговец")
                 {
-                    Action = () => _screenPlayer.AddNextScreen<City>(),
+                    Action = () => _screenPlayer.AddNextScreen<ShopScreen>(),
                 },
             });
 

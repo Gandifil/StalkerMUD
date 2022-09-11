@@ -37,5 +37,10 @@ namespace StalkerMUD.Server.Data
             return _db.GetCollection<T>().FindOne(predicate) 
                 ?? throw new KeyNotFoundException(typeof(T).Name);
         }
+
+        public async Task UpdateAsync(T entity)
+        {
+            _db.GetCollection<T>().Update(entity);
+        }
     }
 }

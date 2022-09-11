@@ -10,6 +10,8 @@ namespace StalkerMUD.Server.Data
 
         Task<int> InsertAsync(T entity);
 
+        Task UpdateAsync(T entity);
+
         Task<T> SelectSingleAsync(Expression<Func<T, bool>> predicate);
 
         Task<IEnumerable<T>> SelectAsync(Expression<Func<T, bool>> predicate);

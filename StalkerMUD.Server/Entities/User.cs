@@ -7,5 +7,7 @@
         public string Name { get; set; }
 
         public string PasswordHash { get; set; }
+
+        public Player Player { get; set; } = new Player();
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StalkerMUD.Common.Models;
-using StalkerMUD.Server.Models;
 using StalkerMUD.Server.Services;
 
 namespace StalkerMUD.Server.Controllers

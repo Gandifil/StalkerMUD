@@ -27,6 +27,7 @@ namespace StalkerMUD.Server.Services
             return points.Select(x => new ShopPointResponse()
             {
                 Id = x.Id,
+                ItemId = x.ItemId,
                 Name = _items.GetAsync(x.ItemId).Result.Name,
                 Cost = x.Cost,
             }).ToList();

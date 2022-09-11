@@ -1,5 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StalkerMUD.Client.Logic;
 using StalkerMUD.Client.Screens;
@@ -26,11 +25,22 @@ var host = Host.CreateDefaultBuilder(args)
             client.JsonSerializerSettings.PropertyNameCaseInsensitive = true;
             return client;
         });
+        services.AddScoped(services =>
+        {
+            var connectionState = services.GetRequiredService<ConnectionState>();
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+                connectionState?.Token ?? throw new ArgumentNullException());
+            var client = new PlayerClient(context.Configuration["Server:Host"], httpClient);
+            client.JsonSerializerSettings.PropertyNameCaseInsensitive = true;
+            return client;
+        });
 
         // screens
         services.AddScoped<MainMenuScreen>();
         services.AddScoped<RegistrationScreen>();
         services.AddScoped<LoginScreen>();
+        services.AddScoped<ShopScreen>();
         services.AddScoped<City>();
 
         // singletone
