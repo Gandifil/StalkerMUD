@@ -21,9 +21,10 @@ namespace StalkerMUD.Server.Data
             return _memory;
         }
 
-        public Task<T> GetAsync(int ID)
+        public async Task<T> GetAsync(int ID)
         {
-            return SelectSingleAsync(x => ((int)_idProperty.GetValue(x)) == ID);
+            var foundeds = await SelectAsync(x => ((int)_idProperty.GetValue(x)) == ID);
+            return foundeds.FirstOrDefault();
         }
 
         public async Task<int> InsertAsync(T entity)
