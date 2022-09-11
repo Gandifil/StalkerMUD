@@ -12,6 +12,8 @@
 
         public int CritPercent { get; set; }
 
+        public int Resistance { get; set; }
+
         public float CritFactor { get; set; }
     }
 }

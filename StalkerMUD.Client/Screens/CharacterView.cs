@@ -30,6 +30,7 @@ namespace StalkerMUD.Client.Screens
                 Console.WriteLine($"{Attributes.Names[attribute]}: {player.Attributes[attribute]}");
             }
             Console.WriteLine($"HP: {player.MaxHP}");
+            Console.WriteLine($"Защита: {player.Resistance}");
             Console.WriteLine($"Шанс критического урона: {player.CritPercent}%");
             Console.WriteLine($"Количество критического урона: {player.CritFactor * 100}%");
 

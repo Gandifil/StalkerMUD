@@ -71,13 +71,34 @@ builder.Services.AddSingleton<IRepository<Item>>(_=> new MemoryRepository<Item>(
 {
     new Item()
     {
-        Id = 1,
-        Name = "Дробаш",
+        Id = 101,
+        Name = "Пистолет",
+        Type = StalkerMUD.Common.ItemType.Weapon,
+        Damage = 4,
+        Rounds = 5,
     },
     new Item()
     {
-        Id = 2,
-        Name = "Жилет",
+        Id = 102,
+        Name = "Дробовик",
+        Type = StalkerMUD.Common.ItemType.Weapon,
+        Damage = 12,
+        Rounds = 2,
+    },
+    new Item()
+    {
+        Id = 201,
+        Type = StalkerMUD.Common.ItemType.Suit,
+        Name = "Куртка",
+        Resistance = 2,
+    },
+    new Item()
+    {
+        Id = 202,
+        Type = StalkerMUD.Common.ItemType.Suit,
+        Name = "Защитный комбинезон",
+        Health = 100,
+        Resistance = 10,
     },
 }));
 builder.Services.AddSingleton<IRepository<ShopPoint>>(_ => new MemoryRepository<ShopPoint>(new List<ShopPoint>()
@@ -85,14 +106,26 @@ builder.Services.AddSingleton<IRepository<ShopPoint>>(_ => new MemoryRepository<
     new ShopPoint()
     {
         Id = 1,
-        ItemId = 1,
+        ItemId = 101,
         Cost = 100,
     },
     new ShopPoint()
     {
         Id = 2,
-        ItemId = 2,
-        Cost = 200,
+        ItemId = 102,
+        Cost = 500,
+    },
+    new ShopPoint()
+    {
+        Id = 3,
+        ItemId = 201,
+        Cost = 100,
+    },
+    new ShopPoint()
+    {
+        Id = 4,
+        ItemId = 202,
+        Cost = 500,
     },
 }));
 

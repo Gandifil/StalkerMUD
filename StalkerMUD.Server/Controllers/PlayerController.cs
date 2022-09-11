@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StalkerMUD.Common;
 using StalkerMUD.Common.Models;
 using StalkerMUD.Server.Data;
 using StalkerMUD.Server.Entities;
@@ -12,14 +13,16 @@ namespace StalkerMUD.Server.Controllers
     public class PlayerController : ControllerBase
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IRepository<Item> _items;
         private readonly IRepository<User> _users;
         private readonly IRepository<ShopPoint> _shopPoints;
 
-        public PlayerController(IHttpContextAccessor httpContextAccessor, IRepository<User> users, IRepository<ShopPoint> shopPoints)
+        public PlayerController(IHttpContextAccessor httpContextAccessor, IRepository<User> users, IRepository<ShopPoint> shopPoints, IRepository<Item> items)
         {
             _httpContextAccessor = httpContextAccessor;
             _users = users;
             _shopPoints = shopPoints;
+            _items = items;
         }
 
         [HttpGet]
@@ -33,9 +36,11 @@ namespace StalkerMUD.Server.Controllers
                 Name = user.Name,
                 AttributeFreePoints = player.AttributeFreePoints,
                 Attributes = player.Attributes,
-                MaxHP = player.MaxHP,
-                CritPercent = player.CritPercent,
-                CritFactor = player.CritFactor,
+                MaxHP = 10 * player.Attributes[AttributeType.Health] 
+                + (await _items.GetAsync(player.SelectedSuitId ?? 0))?.Health ?? 0,
+                Resistance = (await _items.GetAsync(player.SelectedSuitId ?? 0))?.Resistance ?? 0,
+                CritPercent = player.Attributes[AttributeType.WeakExploit] * 2,
+                CritFactor = 2.0f + 0.1f * player.Attributes[AttributeType.WeakExploit],
             };
         }
 
@@ -59,6 +64,19 @@ namespace StalkerMUD.Server.Controllers
             {
                 user.Player.Money -= shopPoint.Cost;
                 user.Player.AddItem(shopPoint.ItemId);
+
+                var item = await _items.GetAsync(shopPoint.ItemId);
+                switch (item.Type)
+                {
+                    case Common.ItemType.Weapon:
+                        user.Player.SelectedWeaponId = item.Id;
+                        break;
+                    case Common.ItemType.Suit:
+                        user.Player.SelectedSuitId = item.Id;
+                        break;
+                    default:
+                        break;
+                }
                 await _users.UpdateAsync(user);
             }
             else throw new ArgumentOutOfRangeException();

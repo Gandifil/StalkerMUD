@@ -16,6 +16,10 @@ namespace StalkerMUD.Server.Entities
 
         public int AttributeFreePoints { get; set; } = 10;
 
+        public int? SelectedWeaponId { get; set; }
+
+        public int? SelectedSuitId { get; set; }
+
         public void AddItem(int itemId)
         {
             if (Items.TryGetValue(itemId, out var item))
@@ -34,11 +38,5 @@ namespace StalkerMUD.Server.Entities
             { AttributeType.WeakExploit, 5 },
             { AttributeType.Speed, 5 },
         };
-
-        public int MaxHP => 10 * Attributes[AttributeType.Health];
-
-        public int CritPercent => Attributes[AttributeType.WeakExploit] * 2;
-
-        public float CritFactor => 2.0f + 0.1f * Attributes[AttributeType.WeakExploit];
     }
 }
