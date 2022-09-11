@@ -16,51 +16,45 @@ namespace StalkerMUD.Client.Screens
 
         public AttributeType CurrentAttribute { get; set; } = AttributeType.Health;
 
-        private readonly Game _game;
-
-        private readonly Screen _backScreen;
-
-        public UpgradeCharacter(Game game, Screen backScreen)
+        public UpgradeCharacter()
         {
-            _game = game;
-            _backScreen = backScreen;
         }
 
         public override void Show()
         {
             base.Show();
 
-            Console.WriteLine($"Свободных очков: {_game.Player.AttributeFreePoints}");
-            Console.WriteLine($"Выбранная характеристика: {Attributes.Names[CurrentAttribute]}");
+            //Console.WriteLine($"Свободных очков: {_game.Player.AttributeFreePoints}");
+            //Console.WriteLine($"Выбранная характеристика: {Attributes.Names[CurrentAttribute]}");
         }
 
-        public override ChoiceBox GenerateChoices()
-        {
-            var cases = ((AttributeType[])Enum.GetValues(typeof(AttributeType)))
-                .Select(x => new ChoiceBox.Case($"{Attributes.Names[x]} - {_game.Player.Attributes[x]}")
-                {
-                    Action = () => { CurrentAttribute = x; },
-                    Color = x == CurrentAttribute ? ConsoleColor.Green : ConsoleColor.Gray,
-                });
-            return new ChoiceBox(cases.ToArray())
-            {
-                //BackScreen = _backScreen,
-                EnterCase = new ChoiceBox.Case("Увеличить")
-                {
-                    Action = UpgradeAttribute,
-                }
-            };
-        }
+        //public override ChoiceBox GenerateChoices()
+        //{
+        //    var cases = ((AttributeType[])Enum.GetValues(typeof(AttributeType)))
+        //        .Select(x => new ChoiceBox.Case($"{Attributes.Names[x]} - {_game.Player.Attributes[x]}")
+        //        {
+        //            Action = () => { CurrentAttribute = x; },
+        //            Color = x == CurrentAttribute ? ConsoleColor.Green : ConsoleColor.Gray,
+        //        });
+        //    return new ChoiceBox(cases.ToArray())
+        //    {
+        //        //BackScreen = _backScreen,
+        //        EnterCase = new ChoiceBox.Case("Увеличить")
+        //        {
+        //            Action = UpgradeAttribute,
+        //        }
+        //    };
+        //}
 
-        private void UpgradeAttribute()
-        {
-            var player = _game.Player;
+        //private void UpgradeAttribute()
+        //{
+        //    var player = _game.Player;
 
-            if (player.AttributeFreePoints > 0)
-            { 
-                player.AttributeFreePoints--;
-                player.Attributes[CurrentAttribute]++;
-            }
-        }
+        //    if (player.AttributeFreePoints > 0)
+        //    { 
+        //        player.AttributeFreePoints--;
+        //        player.Attributes[CurrentAttribute]++;
+        //    }
+        //}
     }
 }

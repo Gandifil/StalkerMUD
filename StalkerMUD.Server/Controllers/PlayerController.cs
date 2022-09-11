@@ -23,6 +23,23 @@ namespace StalkerMUD.Server.Controllers
         }
 
         [HttpGet]
+        public async Task<PlayerResponse> Get()
+        {
+            int id = GetUserId();
+            var user = await _users.GetAsync(id);
+            var player = user.Player;
+            return new PlayerResponse()
+            {
+                Name = user.Name,
+                AttributeFreePoints = player.AttributeFreePoints,
+                Attributes = player.Attributes,
+                MaxHP = player.MaxHP,
+                CritPercent = player.CritPercent,
+                CritFactor = player.CritFactor,
+            };
+        }
+
+        [HttpGet]
         [Route("money")]
         public async Task<int> GetMoney()
         {

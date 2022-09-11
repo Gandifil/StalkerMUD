@@ -40,8 +40,10 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddScoped<MainMenuScreen>();
         services.AddScoped<RegistrationScreen>();
         services.AddScoped<LoginScreen>();
-        services.AddScoped<ShopScreen>();
         services.AddScoped<City>();
+        services.AddScoped<ShopScreen>();
+        services.AddScoped<CharacterView>();
+        services.AddScoped<UpgradeCharacter>();
 
         // singletone
         services.AddSingleton<ScreenPlayer>();
