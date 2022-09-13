@@ -20,7 +20,7 @@ namespace StalkerMUD.Client.Screens
             base.Show();
 
             new ChoiceBox(new List<ChoiceBox.Case>{
-                new ChoiceBox.Case(() => _screenPlayer.AddNextScreen<City>(), "Арена"),
+                new ChoiceBox.Case(() => _screenPlayer.AddNextScreen<FightScreen>(), "Арена"),
                 new ChoiceBox.Case(() => _screenPlayer.AddNextScreen<CharacterView>(), "Персонаж"),
                 new ChoiceBox.Case(() => _screenPlayer.AddNextScreen<ShopScreen>(), "Торговец"),
             }).Show();

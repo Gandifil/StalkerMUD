@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StalkerMUD.Client.Logic;
 using StalkerMUD.Client.Screens;
@@ -25,6 +26,25 @@ var host = Host.CreateDefaultBuilder(args)
             client.JsonSerializerSettings.PropertyNameCaseInsensitive = true;
             return client;
         });
+        services.AddScoped(services =>
+        {
+            var connectionState = services.GetRequiredService<ConnectionState>();
+            var token = connectionState?.Token ?? throw new ArgumentNullException();
+            var connection = new HubConnectionBuilder()
+                .WithUrl($"{context.Configuration["Server:Host"]}/fight", options =>
+                {
+                    options.AccessTokenProvider = async() => token;
+                })
+                .Build();
+
+            connection.Closed += async (error) =>
+            {
+                await Task.Delay(new Random().Next(0, 5) * 1000);
+                await connection.StartAsync();
+            };
+
+            return connection;
+        });
         services.AddScoped<IPlayerClient>(services =>
         {
             var connectionState = services.GetRequiredService<ConnectionState>();
@@ -44,6 +64,7 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddScoped<ShopScreen>();
         services.AddScoped<CharacterView>();
         services.AddScoped<UpgradeCharacter>();
+        services.AddScoped<FightScreen>();
 
         // singletone
         services.AddSingleton<ScreenPlayer>();

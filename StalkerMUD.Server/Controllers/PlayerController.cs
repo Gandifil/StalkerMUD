@@ -4,6 +4,7 @@ using StalkerMUD.Common;
 using StalkerMUD.Common.Models;
 using StalkerMUD.Server.Data;
 using StalkerMUD.Server.Entities;
+using StalkerMUD.Server.Services;
 
 namespace StalkerMUD.Server.Controllers
 {
@@ -13,15 +14,17 @@ namespace StalkerMUD.Server.Controllers
     public class PlayerController : ControllerBase
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IRepository<Item> _items;
         private readonly IRepository<User> _users;
+        private readonly IRepository<Item> _items;
         private readonly IRepository<ShopPoint> _shopPoints;
+        private readonly IFightParamatersCalculator _fightParamatersCalculator;
 
-        public PlayerController(IHttpContextAccessor httpContextAccessor, IRepository<User> users, IRepository<ShopPoint> shopPoints, IRepository<Item> items)
+        public PlayerController(IHttpContextAccessor httpContextAccessor, IRepository<User> users, IRepository<ShopPoint> shopPoints, IFightParamatersCalculator fightParamatersCalculator = null, IRepository<Item> items = null)
         {
             _httpContextAccessor = httpContextAccessor;
             _users = users;
             _shopPoints = shopPoints;
+            _fightParamatersCalculator = fightParamatersCalculator;
             _items = items;
         }
 
@@ -30,17 +33,16 @@ namespace StalkerMUD.Server.Controllers
         {
             int id = GetUserId();
             var user = await _users.GetAsync(id);
-            var player = user.Player;
+            var parameters = await _fightParamatersCalculator.GetForAsync(user);
             return new PlayerResponse()
             {
-                Name = user.Name,
-                AttributeFreePoints = player.AttributeFreePoints,
-                Attributes = player.Attributes,
-                MaxHP = 10 * player.Attributes[AttributeType.Health] 
-                + (await _items.GetAsync(player.SelectedSuitId ?? 0))?.Health ?? 0,
-                Resistance = (await _items.GetAsync(player.SelectedSuitId ?? 0))?.Resistance ?? 0,
-                CritPercent = player.Attributes[AttributeType.WeakExploit] * 2,
-                CritFactor = 2.0f + 0.1f * player.Attributes[AttributeType.WeakExploit],
+                AttributeFreePoints = user.Player.AttributeFreePoints,
+                Name = parameters.Name,
+                Attributes = parameters.Attributes,
+                MaxHP = parameters.MaxHP,
+                Resistance = parameters.Resistance,
+                CritPercent = parameters.CritPercent,
+                CritFactor = parameters.CritFactor,
             };
         }
 
@@ -92,7 +94,7 @@ namespace StalkerMUD.Server.Controllers
             if (player.AttributeFreePoints > 0)
             {
                 player.AttributeFreePoints--;
-                player.Attributes[upgradeRequest.Attribute]++;
+                player.Attributes.Data[upgradeRequest.Attribute]++;
                 await _users.UpdateAsync(user);
             }
             else throw new ArgumentOutOfRangeException();

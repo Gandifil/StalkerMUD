@@ -1,4 +1,5 @@
-﻿using StalkerMUD.Common;
+﻿using LiteDB;
+using StalkerMUD.Common;
 
 namespace StalkerMUD.Server.Entities
 {
@@ -28,15 +29,7 @@ namespace StalkerMUD.Server.Entities
                 Items.Add(itemId, new ItemPack { Id = itemId, Count = 1 });
         }
 
-        public Dictionary<AttributeType, int> Attributes { get; set; }
-        = new Dictionary<AttributeType, int>
-        {
-            { AttributeType.Health, 5 },
-            { AttributeType.WeaponLevel, 5 },
-            { AttributeType.Accuracy, 5 },
-            { AttributeType.Dodge, 5 },
-            { AttributeType.WeakExploit, 5 },
-            { AttributeType.Speed, 5 },
-        };
+        [BsonRef]
+        public Attributes Attributes { get; set; } = new();
     }
 }

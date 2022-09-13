@@ -4,16 +4,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StalkerMUD.Server.Data;
 using StalkerMUD.Server.Entities;
+using StalkerMUD.Server.Hubs;
 using StalkerMUD.Server.Models;
 using StalkerMUD.Server.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -46,6 +45,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IShopsService, ShopsService>();
+builder.Services.AddScoped<IFightParamatersCalculator, FightParamatersCalculator>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -65,6 +65,8 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT")["Secret"]))
     };
 });
+
+builder.Services.AddSignalR();
 builder.Services.AddSingleton<ILiteDatabase>(_ => new LiteDatabase(@"StalkerMUD.db"));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(LiteDbRepository<>));
 builder.Services.AddSingleton<IRepository<Item>>(_=> new MemoryRepository<Item>(new List<Item>()
@@ -128,6 +130,15 @@ builder.Services.AddSingleton<IRepository<ShopPoint>>(_ => new MemoryRepository<
         Cost = 500,
     },
 }));
+builder.Services.AddSingleton<IRepository<Mob>>(_ => new MemoryRepository<Mob>(new List<Mob>()
+{
+    new Mob()
+    {
+        Id = 1,
+        Name = "Пёс Сутулый",
+        Attributes = new Attributes(),
+    }
+}));
 
 
 var app = builder.Build();
@@ -145,5 +156,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<FightHub>("/fight");
 
 app.Run();
