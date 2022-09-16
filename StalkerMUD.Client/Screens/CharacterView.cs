@@ -7,8 +7,6 @@ namespace StalkerMUD.Client.Screens
     {
         public override string Name => "Персонаж";
 
-        public override string Description => "";
-
         private readonly IPlayerClient _playerClient;
         private readonly ScreenPlayer _screenPlayer;
 
@@ -18,11 +16,11 @@ namespace StalkerMUD.Client.Screens
             _screenPlayer = screenPlayer;
         }
 
-        public override void Show()
+        public override async Task Show()
         {
-            base.Show();
+            await base.Show();
 
-            var player = _playerClient.PlayerAsync().Result;
+            var player = await _playerClient.PlayerAsync();
 
             Console.WriteLine($"Имя: {player.Name}");
             foreach (AttributeType attribute in (AttributeType[])Enum.GetValues(typeof(AttributeType)))
@@ -37,7 +35,7 @@ namespace StalkerMUD.Client.Screens
             GenerateChoices().Show();
         }
 
-        public override ChoiceBox GenerateChoices()
+        private ChoiceBox GenerateChoices()
         {
             return new ChoiceBox(new ChoiceBox.Case(() => _screenPlayer.AddNextScreen<UpgradeCharacter>(), 
                 "Изменить характеристики"))

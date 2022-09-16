@@ -16,14 +16,13 @@ namespace StalkerMUD.Client.Screens.Auth
 
         public override string Name => "Регистрация";
 
-        protected override string RequestToken(string login, string? password)
+        protected override async Task<string> RequestToken(string login, string? password)
         {
-            var response = _authClient.RegisterAsync(new Common.Models.AuthenticateRequest
+            var response = await _authClient.RegisterAsync(new Common.Models.AuthenticateRequest
             {
                 Username = login,
                 Password = password,
-
-            }).Result;
+            });
             return response.Token;
         }
     }

@@ -68,6 +68,5 @@ var host = Host.CreateDefaultBuilder(args)
     .Build();
 
 var screens = host.Services.GetRequiredService<ScreenPlayer>();
-
 screens.AddNextScreen<MainMenuScreen>();
-screens.StartShowCycle();
+await screens.StartShowCycle();

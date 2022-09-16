@@ -15,11 +15,9 @@ namespace StalkerMUD.Client.Screens.Auth
             _screenPlayer = screenPlayer;
         }
 
-        public override string Description => string.Empty;
-
-        public override void Show()
+        public override async Task Show()
         {
-            base.Show();
+            await base.Show();
 
             Console.Write("Логин: ");
             var login = Console.ReadLine();
@@ -41,7 +39,7 @@ namespace StalkerMUD.Client.Screens.Auth
 
             try
             {
-                _connectionState.Token = RequestToken(login, password);
+                _connectionState.Token = await RequestToken(login, password);
                 _screenPlayer.AddNextScreen<City>();
             }
             catch (Exception e)
@@ -51,6 +49,6 @@ namespace StalkerMUD.Client.Screens.Auth
             }
         }
 
-        protected abstract string RequestToken(string login, string? password);
+        protected abstract Task<string> RequestToken(string login, string? password);
     }
 }

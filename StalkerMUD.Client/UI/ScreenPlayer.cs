@@ -23,20 +23,20 @@ namespace StalkerMUD.Client.UI
             _screens.Enqueue(typeof(T));
         }
 
-        public void StartShowCycle()
+        public async Task StartShowCycle()
         {
             while (true)
             {
                 var screenType = _screens.Dequeue();
-                ShowScreen(screenType);
+                await ShowScreen(screenType);
             }
         }
 
-        private void ShowScreen(Type type)
+        private async Task ShowScreen(Type type)
         {
             using var scope = _serviceProvider.CreateScope();
             _current = (scope.ServiceProvider.GetRequiredService(type) as IScreen) ?? throw new ArgumentNullException();
-            _current.Show();
+            await _current.Show();
         }
     }
 }

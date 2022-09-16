@@ -8,8 +8,6 @@ namespace StalkerMUD.Client.Screens
     {
         public override string Name => "БОЙ";
 
-        public override string Description => null;
-
         private readonly HubConnection _connection;
 
         public FightScreen(HubConnection connection)
@@ -17,9 +15,9 @@ namespace StalkerMUD.Client.Screens
             _connection = connection;
         }
 
-        public override void Show()
+        public override async Task Show()
         {
-            base.Show();
+            await base.Show();
 
             _connection.On<ActorResponse>("newActor", actor => Console.WriteLine(actor.Name));
 
@@ -34,8 +32,8 @@ namespace StalkerMUD.Client.Screens
                 choices.Show();
             });
 
-            _connection.StartAsync().Wait();
-            _connection.InvokeAsync("Start").Wait();
+            await _connection.StartAsync();
+            await _connection.InvokeAsync("Start");
             Console.ReadLine();
         }
     }

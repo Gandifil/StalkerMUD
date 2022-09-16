@@ -6,8 +6,6 @@ namespace StalkerMUD.Client.Screens
     {
         public override string Name => "Город";
 
-        public override string Description => "";
-
         private readonly ScreenPlayer _screenPlayer;
 
         public City( ScreenPlayer screenPlayer)
@@ -15,9 +13,9 @@ namespace StalkerMUD.Client.Screens
             _screenPlayer = screenPlayer;
         }
 
-        public override void Show()
+        public override async Task Show()
         {
-            base.Show();
+            await base.Show();
 
             new ChoiceBox(new List<ChoiceBox.Case>{
                 new ChoiceBox.Case(() => _screenPlayer.AddNextScreen<FightScreen>(), "Арена"),

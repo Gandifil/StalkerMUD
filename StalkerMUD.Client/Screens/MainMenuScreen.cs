@@ -12,8 +12,6 @@ namespace StalkerMUD.Client.Screens
     {
         public override string Name => string.Empty;
 
-        public override string Description => string.Empty;
-
         private readonly ScreenPlayer _screenPlayer;
 
         public MainMenuScreen(ScreenPlayer screenPlayer)
@@ -21,9 +19,9 @@ namespace StalkerMUD.Client.Screens
             _screenPlayer = screenPlayer;
         }
 
-        public override void Show()
+        public override async Task Show()
         {
-            base.Show();
+            await base.Show();
 
             var choices = new ChoiceBox(new List<ChoiceBox.Case>{
                 new ChoiceBox.Case(() => _screenPlayer.AddNextScreen<RegistrationScreen>(), "Зарегистрироваться"),

@@ -22,9 +22,9 @@ namespace StalkerMUD.Client.Screens
             _screenPlayer = screenPlayer;
         }
 
-        public ChoiceBox GenerateChoices()
+        public async Task<ChoiceBox> GenerateChoices()
         {
-            var items = _shopsClient.ShopsAsync().Result;
+            var items = await _shopsClient.ShopsAsync();
             var actions = new List<ChoiceBox.Case>();
             foreach (var shopPoint in items)
             {
@@ -33,7 +33,7 @@ namespace StalkerMUD.Client.Screens
                 {
                     Name = $"{shopPoint.Name} - {cost} руб",
                     Action = () => { 
-                        Buy(shopPoint.Id);
+                        Buy(shopPoint.Id).Wait();
                         _screenPlayer.Restart();
                     },
                     IsEnabled = _money >= cost,
@@ -45,23 +45,24 @@ namespace StalkerMUD.Client.Screens
             };
         }
 
-        private void Buy(int itemId)
+        private Task Buy(int itemId)
         {
-            _playerClient.BuyAsync(new BuyRequest() { ShopPointId = itemId }).Wait();
+            return _playerClient.BuyAsync(new BuyRequest() { ShopPointId = itemId });
         }
 
-        public override void Show()
+        public override async Task Show()
         {
-            UpdateMoney();
+            await UpdateMoneyAsync();
 
-            base.Show();
+            await base.Show();
 
-            GenerateChoices().Show();
+            var choices = await GenerateChoices();
+            choices.Show();
         }
 
-        private void UpdateMoney()
+        private async Task UpdateMoneyAsync()
         {
-            _money = _playerClient.MoneyAsync().Result;
+            _money = await _playerClient.MoneyAsync();
         }
     }
 }

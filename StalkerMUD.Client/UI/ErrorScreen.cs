@@ -9,7 +9,7 @@
             _message = message;
         }
 
-        public void Show()
+        public async Task Show()
         {
             var foregroundColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
