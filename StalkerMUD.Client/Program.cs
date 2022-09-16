@@ -7,22 +7,21 @@ using StalkerMUD.Client.Screens.Auth;
 using StalkerMUD.Client.UI;
 using StalkerMUD.Common;
 using System.Net.Http.Headers;
+using System.Text.Json;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) => {
+        var host = context.Configuration["Server:Host"];
+        services.AddSingleton(_ => new HttpClient());
         services.AddScoped(_ =>
         {
-            var client = new AuthClient(context.Configuration["Server:Host"], new HttpClient());
+            var client = new AuthClient(host, new HttpClient());
             client.JsonSerializerSettings.PropertyNameCaseInsensitive = true;
             return client;
         });
         services.AddScoped(services =>
         {
-            var connectionState = services.GetRequiredService<ConnectionState>();
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
-                connectionState?.Token ?? throw new ArgumentNullException());
-            var client = new ShopsClient(context.Configuration["Server:Host"], httpClient);
+            var client = new ShopsClient(host, services.GetRequiredService<HttpClient>());
             client.JsonSerializerSettings.PropertyNameCaseInsensitive = true;
             return client;
         });
@@ -31,7 +30,7 @@ var host = Host.CreateDefaultBuilder(args)
             var connectionState = services.GetRequiredService<ConnectionState>();
             var token = connectionState?.Token ?? throw new ArgumentNullException();
             var connection = new HubConnectionBuilder()
-                .WithUrl($"{context.Configuration["Server:Host"]}/fight", options =>
+                .WithUrl($"{host}/fight", options =>
                 {
                     options.AccessTokenProvider = async() => token;
                 })
@@ -47,11 +46,7 @@ var host = Host.CreateDefaultBuilder(args)
         });
         services.AddScoped<IPlayerClient>(services =>
         {
-            var connectionState = services.GetRequiredService<ConnectionState>();
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
-                connectionState?.Token ?? throw new ArgumentNullException());
-            var client = new PlayerClient(context.Configuration["Server:Host"], httpClient);
+            var client = new PlayerClient(host, services.GetRequiredService<HttpClient>());
             client.JsonSerializerSettings.PropertyNameCaseInsensitive = true;
             return client;
         });

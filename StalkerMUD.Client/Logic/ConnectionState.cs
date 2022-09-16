@@ -1,7 +1,24 @@
-﻿namespace StalkerMUD.Client.Logic
+﻿using System.Net.Http.Headers;
+
+namespace StalkerMUD.Client.Logic
 {
-    class ConnectionState
+    internal class ConnectionState
     {
-        public string Token { get; set; }
+        private readonly HttpClient _httpClient;
+
+        public ConnectionState(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
+        public string Token 
+        {
+            get => "";
+            set
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+                    value ?? throw new ArgumentNullException());
+            }
+        }
     }
 }
