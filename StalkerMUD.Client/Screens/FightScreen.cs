@@ -23,6 +23,17 @@ namespace StalkerMUD.Client.Screens
 
             _connection.On<ActorResponse>("newActor", actor => Console.WriteLine(actor.Name));
 
+            _connection.On("selectAction", () =>
+            {
+                var choices = new ChoiceBox(new List<ChoiceBox.Case>
+                {
+                    new ChoiceBox.Case(() => _connection.InvokeAsync("Attack"), "Стрелять"),
+                    new ChoiceBox.Case(() => _connection.InvokeAsync("Skip"), "Пропустить"),
+                });
+
+                choices.Show();
+            });
+
             _connection.StartAsync().Wait();
             _connection.InvokeAsync("Start").Wait();
             Console.ReadLine();

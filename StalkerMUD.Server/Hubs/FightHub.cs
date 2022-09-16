@@ -25,7 +25,8 @@ namespace StalkerMUD.Server.Hubs
 
         public async Task Start()
         {
-            if (_room == null)
+            var isRoomNull = _room == null;
+            if (isRoomNull)
                 await InitializeRoom();
 
             foreach (var actorResponse in _room.Actors)
@@ -35,6 +36,15 @@ namespace StalkerMUD.Server.Hubs
                 await _paramatersCalculator.GetForAsync(await _users.GetAsync(GetUserId())));
 
             await Clients.All.SendCoreAsync("newActor", new object[] { actor });
+
+            if (isRoomNull)
+            {
+
+                await Clients.Caller.SendAsync("selectAction");
+                //_room.Do(RoomAction.Skip);
+                //await SendSelectAction();
+            }
+                
         }
 
         private int GetUserId()
@@ -54,16 +64,30 @@ namespace StalkerMUD.Server.Hubs
                 await _paramatersCalculator.GetForAsync(await _mobs.GetAsync(1)));
         }
 
-        public void Attack()
+        public async Task Attack()
         {
             if (GetPlayerActorId() == _room?.CurrentActor)
                 _room.Do(RoomAction.Attack);
+
+            await SendSelectAction();
         }
 
-        public void Skip()
+        private async Task SendSelectAction()
+        {
+            var currentActor = _room.CurrentActor;
+            if (currentActor.StartsWith(nameof(PLAYER_COMMAND)))
+            {
+                var connectionId = currentActor.Substring(nameof(PLAYER_COMMAND).Length);
+                await Clients.Client(connectionId).SendAsync("selectAction");
+            }
+        }
+
+        public async Task Skip()
         {
             if (GetPlayerActorId() == _room?.CurrentActor)
                 _room.Do(RoomAction.Skip);
+
+            await SendSelectAction();
         }
     }
 }

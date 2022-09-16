@@ -54,7 +54,7 @@ namespace StalkerMUD.Server.Services
                 Parameters = parameters,
             };
             _actors.Add(id, actor);
-            _moveQueue.Append(id);
+            _moveQueue.Add(id);
 
             var response = new ActorResponse()
             {
@@ -90,7 +90,7 @@ namespace StalkerMUD.Server.Services
 
         private void ShiftMoveQueue()
         {
-            _moveQueue.Append(_moveQueue.First());
+            _moveQueue.Add(_moveQueue.First());
             _moveQueue.RemoveAt(0);
         }
     }
