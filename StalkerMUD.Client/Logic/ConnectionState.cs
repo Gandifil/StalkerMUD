@@ -11,11 +11,14 @@ namespace StalkerMUD.Client.Logic
             _httpClient = httpClient;
         }
 
+        private string _token;
+
         public string Token 
         {
-            get => "";
+            get => _token;
             set
             {
+                _token = value;
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
                     value ?? throw new ArgumentNullException());
             }

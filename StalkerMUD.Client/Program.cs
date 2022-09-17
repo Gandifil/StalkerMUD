@@ -6,8 +6,6 @@ using StalkerMUD.Client.Screens;
 using StalkerMUD.Client.Screens.Auth;
 using StalkerMUD.Client.UI;
 using StalkerMUD.Common;
-using System.Net.Http.Headers;
-using System.Text.Json;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) => {

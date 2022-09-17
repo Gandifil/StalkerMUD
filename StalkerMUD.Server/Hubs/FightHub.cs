@@ -14,7 +14,7 @@ namespace StalkerMUD.Server.Hubs
         private readonly IRepository<Mob> _mobs;
         private readonly IRepository<User> _users;
 
-        private IRoom<string>? _room;
+        private static IRoom<string>? _room;
 
         public FightHub(IFightParamatersCalculator paramatersCalculator, IRepository<Mob> mobs, IRepository<User> users)
         {

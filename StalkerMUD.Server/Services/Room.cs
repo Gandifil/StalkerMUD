@@ -60,6 +60,7 @@ namespace StalkerMUD.Server.Services
             {
                 Id = id.GetHashCode(),
                 Hp = actor.Hp,
+                MaxHp = parameters.MaxHP,
                 Command = command,
                 Name = parameters.Name,
             };
