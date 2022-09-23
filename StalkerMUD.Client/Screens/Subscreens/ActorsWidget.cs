@@ -37,7 +37,7 @@ namespace StalkerMUD.Client.Screens.Subscreens
                 Console.Write('|');
                 lastCommand = actor.Command;
             }
-
+            Console.WriteLine();
         }
 
         private string GetHpBar(int hp, int maxHp)

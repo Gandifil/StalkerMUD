@@ -36,6 +36,7 @@ namespace StalkerMUD.Server.Hubs
                 await _paramatersCalculator.GetForAsync(await _users.GetAsync(GetUserId())));
 
             await Clients.All.SendCoreAsync("newActor", new object[] { actor });
+            await Clients.All.SendCoreAsync("message", new object[] { "Hello, World!" });
 
             if (isRoomNull)
             {
