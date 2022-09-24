@@ -13,5 +13,9 @@
         public int Resistance { get; set; }
 
         public float CritFactor { get; set; }
+
+        public int Damage { get; set; }
+
+        public int CritDamage => (int)(Damage * (1 + CritFactor));
     }
 }

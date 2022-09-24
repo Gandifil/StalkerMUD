@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using StalkerMUD.Common.Models;
 using StalkerMUD.Server.Data;
 using StalkerMUD.Server.Entities;
 using StalkerMUD.Server.Services;
@@ -62,8 +63,20 @@ namespace StalkerMUD.Server.Hubs
         private async Task InitializeRoom()
         {
             _room = new Room<string>();
+            _room.OnMessage += OnMessage;
+            _room.OnActorChanged += OnActorChanged;
             _room.Add(Guid.NewGuid().ToString(), MOB_COMMAND, 
                 await _paramatersCalculator.GetForAsync(await _mobs.GetAsync(1)));
+        }
+
+        private void OnActorChanged(ActorChangeResponse actorChange)
+        {
+            Clients.All.ChangeActorAsync(actorChange);
+        }
+
+        private void OnMessage(string text)
+        {
+            Clients.All.SendMessageAsync(text);
         }
 
         public async Task Attack()

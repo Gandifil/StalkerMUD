@@ -10,6 +10,11 @@ namespace StalkerMUD.Server.Hubs
             return proxy.SendAsync("addActor", actor);
         }
 
+        public static Task ChangeActorAsync(this IClientProxy proxy, ActorChangeResponse actorChange)
+        {
+            return proxy.SendAsync("changeActor", actorChange);
+        }
+
         public static Task RemoveActorAsync(this IClientProxy proxy, string actorId)
         {
             return proxy.SendAsync("removeActor", actorId);

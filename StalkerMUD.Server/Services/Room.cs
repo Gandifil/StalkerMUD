@@ -19,6 +19,13 @@ namespace StalkerMUD.Server.Services
         T? Winner { get; }
 
         IReadOnlyCollection<ActorResponse> Actors { get; }
+
+
+        delegate void Message(string text);
+        event Message? OnMessage;
+
+        delegate void ActorChanged(ActorChangeResponse actorChange);
+        event ActorChanged? OnActorChanged;
     }
 
     public class Room<T> : IRoom<T>
@@ -42,6 +49,10 @@ namespace StalkerMUD.Server.Services
         public T? Winner { get; private set; }
 
         private List<ActorResponse> _actorResponses = new();
+
+        public event IRoom<T>.Message? OnMessage;
+        public event IRoom<T>.ActorChanged? OnActorChanged;
+
         public IReadOnlyCollection<ActorResponse> Actors => _actorResponses;
 
         public ActorResponse Add(T id, int command, FightParametersResponse parameters)
@@ -84,9 +95,36 @@ namespace StalkerMUD.Server.Services
             ShiftMoveQueue();
         }
 
-        private void Attack(T currentActor)
+        private void Attack(T currentActorId)
         {
-            throw new NotImplementedException(); // TODO
+            var actor = _actors[currentActorId];
+            var target = _actors.Values.First(x => x.Command != actor.Command);
+
+            // strike logic
+            var accuracy = actor.Parameters.Attributes[Common.AttributeType.Accuracy];
+            var dodge = target.Parameters.Attributes[Common.AttributeType.Dodge];
+            var seed = Random.Shared.Next(accuracy + dodge);
+            seed -= dodge;
+            if (seed < 0)
+            {
+                OnMessage?.Invoke($"[{actor.Parameters.Name}] не смог попасть по [{target.Parameters.Name}]");
+                return;
+            }
+
+            var isCriticaly = Random.Shared.Next(100) < actor.Parameters.CritPercent;
+
+            var damage = isCriticaly ? actor.Parameters.CritDamage : actor.Parameters.Damage;
+            var clearDamage = Math.Max(damage - target.Parameters.Resistance, 0);
+
+            target.Hp = Math.Max(target.Hp - clearDamage, 0);
+            OnActorChanged?.Invoke(
+                new ActorChangeResponse
+                {
+                    Id = target.Id.GetHashCode(),
+                    Type = ActorChangeResponse.ParameterType.Hp,
+                    Value = target.Hp
+                });
+            OnMessage?.Invoke($"[{actor.Parameters.Name}] нанес [{clearDamage}] ед. урона по [{target.Parameters.Name}]");
         }
 
         private void ShiftMoveQueue()

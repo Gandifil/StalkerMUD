@@ -24,6 +24,9 @@ namespace StalkerMUD.Server.Services
         public async Task<FightParametersResponse> GetForAsync(User user)
         {
             var player = user.Player;
+            var weaponDamage = player.SelectedWeaponId.HasValue
+                ? (await _items.GetAsync(player.SelectedWeaponId.Value)).Damage
+                : 1;
             return new FightParametersResponse()
             {
                 Name = user.Name,
@@ -33,6 +36,7 @@ namespace StalkerMUD.Server.Services
                 Resistance = (await _items.GetAsync(player.SelectedSuitId ?? 0))?.Resistance ?? 0,
                 CritPercent = player.Attributes.Data[AttributeType.WeakExploit] * 2,
                 CritFactor = 2.0f + 0.1f * player.Attributes.Data[AttributeType.WeakExploit],
+                Damage = weaponDamage,
             };
         }
 
@@ -46,6 +50,7 @@ namespace StalkerMUD.Server.Services
                 Resistance = 0,
                 CritPercent = mob.Attributes.Data[AttributeType.WeakExploit] * 2,
                 CritFactor = 2.0f + 0.1f * mob.Attributes.Data[AttributeType.WeakExploit],
+                Damage = 2,
             };
         }
     }
