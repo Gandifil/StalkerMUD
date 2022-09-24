@@ -2,6 +2,7 @@ using LiteDB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using StalkerMUD.Server.Data;
 using StalkerMUD.Server.Entities;
 using StalkerMUD.Server.Hubs;
@@ -12,6 +13,16 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+Log.Logger = new LoggerConfiguration()
+  .Enrich.FromLogContext()
+  .MinimumLevel.Verbose()
+  .WriteTo.Console()
+  .CreateLogger();
+builder.Services.AddLogging(x =>
+{
+    x.AddSerilog();
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => {

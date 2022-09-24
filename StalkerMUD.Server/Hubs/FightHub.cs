@@ -13,18 +13,22 @@ namespace StalkerMUD.Server.Hubs
         private readonly IFightParamatersCalculator _paramatersCalculator;
         private readonly IRepository<Mob> _mobs;
         private readonly IRepository<User> _users;
+        private readonly ILogger<FightHub> _logger;
 
         private static IRoom<string>? _room;
 
-        public FightHub(IFightParamatersCalculator paramatersCalculator, IRepository<Mob> mobs, IRepository<User> users)
+        public FightHub(IFightParamatersCalculator paramatersCalculator, IRepository<Mob> mobs, IRepository<User> users, ILogger<FightHub> logger)
         {
             _paramatersCalculator = paramatersCalculator;
             _mobs = mobs;
             _users = users;
+            _logger = logger;
         }
 
         public async Task Start()
         {
+            _logger.LogInformation("{ConnectionId} call Start", Context.ConnectionId);
+
             var isRoomNull = _room == null;
             if (isRoomNull)
                 await InitializeRoom();
