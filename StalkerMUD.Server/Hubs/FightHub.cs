@@ -30,22 +30,19 @@ namespace StalkerMUD.Server.Hubs
                 await InitializeRoom();
 
             foreach (var actorResponse in _room.Actors)
-                await Clients.Caller.SendCoreAsync("newActor", new object[] { actorResponse });
+                await Clients.Caller.AddActorAsync(actorResponse);
 
             var actor = _room.Add(GetPlayerActorId(), PLAYER_COMMAND,
                 await _paramatersCalculator.GetForAsync(await _users.GetAsync(GetUserId())));
 
-            await Clients.All.SendCoreAsync("newActor", new object[] { actor });
-            await Clients.All.SendCoreAsync("message", new object[] { "Hello, World!" });
+            var allClients = Clients.All;
+            await allClients.AddActorAsync(actor);
+            await allClients.SendMessageAsync("Hello, World");
 
             if (isRoomNull)
             {
-
-                await Clients.Caller.SendAsync("selectAction");
-                //_room.Do(RoomAction.Skip);
-                //await SendSelectAction();
+                await Clients.Caller.SelectActionAsync();
             }
-                
         }
 
         private int GetUserId()
@@ -79,7 +76,7 @@ namespace StalkerMUD.Server.Hubs
             if (currentActor.StartsWith(nameof(PLAYER_COMMAND)))
             {
                 var connectionId = currentActor.Substring(nameof(PLAYER_COMMAND).Length);
-                await Clients.Client(connectionId).SendAsync("selectAction");
+                await Clients.Client(connectionId).SelectActionAsync();
             }
         }
 

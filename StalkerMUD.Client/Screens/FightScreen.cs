@@ -24,7 +24,7 @@ namespace StalkerMUD.Client.Screens
         {
             var actors = new List<ActorResponse>();
 
-            _connection.On<ActorResponse>("newActor", OnAddActor);
+            _connection.On<ActorResponse>("addActor", OnAddActor);
             _connection.On("selectAction", OnSelectAction);
             _connection.On<string>("message", OnMessage);
 
