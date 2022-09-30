@@ -46,6 +46,39 @@ namespace StalkerMUD.Client.UI
 
         public Case Show()
         {
+            InlineShow();
+
+            while (true)
+            {
+                var scase = GetSelectedCase(Console.ReadKey());
+                if (scase != null)
+                {
+                    scase.Action?.Invoke();
+                    return scase;
+                }
+            }
+        }
+
+        public async Task WaitInputAsync(CancellationToken cancellationToken)
+        {
+            const int delay = 50;
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                if (Console.KeyAvailable)
+                {
+                    var scase = GetSelectedCase(Console.ReadKey());
+                    if (scase != null)
+                    {
+                        scase.Action?.Invoke();
+                        return;
+                    }
+                }
+                await Task.Delay(delay);
+            }
+        }
+
+        public void InlineShow()
+        {
             if (BackCase is not null)
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
@@ -64,13 +97,9 @@ namespace StalkerMUD.Client.UI
                 Console.WriteLine($"{i + 1}. {_cases[i].Name}");
             }
             Console.ForegroundColor = ConsoleColor.Gray;
-
-            var scase = GetSelectedCase(Console.ReadKey());
-            scase.Action?.Invoke();
-            return scase;
         }
 
-        private Case GetSelectedCase(ConsoleKeyInfo key)
+        private Case? GetSelectedCase(ConsoleKeyInfo key)
         {
             if (EnterCase is not null && key.Key == ConsoleKey.Enter)
                 return EnterCase;
@@ -78,7 +107,12 @@ namespace StalkerMUD.Client.UI
             if (BackCase is not null && (key.KeyChar == QUIT_KEY || key.KeyChar == 'й'))
                 return BackCase;
 
-            return _cases[int.Parse(key.KeyChar.ToString()) - 1];
+            var inputChar = key.KeyChar.ToString();
+            if (int.TryParse(inputChar, out int result))
+                if (0 < result && result <= _cases.Count)
+                    return _cases[result - 1];
+
+            return null;
         }
     }
 }

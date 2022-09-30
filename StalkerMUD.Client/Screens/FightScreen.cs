@@ -18,21 +18,33 @@ namespace StalkerMUD.Client.Screens
         public FightScreen(HubConnection connection)
         {
             _connection = connection;
+            _connection.On<ActorResponse>("addActor", OnAddActor);
+            _connection.On("selectAction", OnSelectAction);
+            _connection.On<string>("message", OnMessage);
         }
 
         public override async Task Show()
         {
-            var actors = new List<ActorResponse>();
-
-            _connection.On<ActorResponse>("addActor", OnAddActor);
-            _connection.On("selectAction", OnSelectAction);
-            _connection.On<string>("message", OnMessage);
-
             await _connection.StartAsync();
-            await _connection.InvokeAsync("Start");
+            try
+            {
+                await _connection.InvokeAsync("Start");
 
-            while (!_cancellationToken.IsCancellationRequested)
-                await Task.Delay(100);
+                while (!_cancellationToken.IsCancellationRequested)
+                    if (_choices.Any())
+                        await new ChoiceBox(_choices).WaitInputAsync(_cancellationToken);
+                    else
+                        await Task.Delay(100);
+
+            }
+            catch (Exception e)
+            {
+                await new ErrorScreen(e.Message).Show();
+            }
+            finally
+            {
+                await _connection.StopAsync();
+            }
         }
 
         private void OnMessage(string message)
@@ -45,7 +57,11 @@ namespace StalkerMUD.Client.Screens
         {
             _choices = new List<ChoiceBox.Case>()
                 {
-                    new ChoiceBox.Case(() => _connection.InvokeAsync("Attack"), "Стрелять"),
+                    new ChoiceBox.Case(() =>
+                    {
+                        _connection.InvokeAsync("Attack");
+                        Rerender();
+                    }, "Стрелять"),
                     new ChoiceBox.Case(() => _connection.InvokeAsync("Skip"), "Пропустить"),
                 };
 
@@ -64,7 +80,7 @@ namespace StalkerMUD.Client.Screens
             await new ActorsWidget(_actors).Show();
             await new GameLogWidget(_messages, 10).Show();
             if (_choices.Any())
-                new ChoiceBox(_choices).Show();
+                new ChoiceBox(_choices).InlineShow();
         }
     }
 }
