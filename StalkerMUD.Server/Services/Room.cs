@@ -8,18 +8,17 @@ namespace StalkerMUD.Server.Services
         Attack,
     }
 
-    public interface IRoom<T>
+    public interface IRoom
     {
-        ActorResponse Add(T id, int command, FightParametersResponse parameters);
+        ActorResponse Add(int command, FightParametersResponse parameters);
 
         void Do(RoomAction action);
 
-        T CurrentActor { get; }
+        int CurrentActor { get; }
 
-        T? Winner { get; }
+        int? Winner { get; }
 
         IReadOnlyCollection<ActorResponse> Actors { get; }
-
 
         delegate void Message(string text);
         event Message? OnMessage;
@@ -28,11 +27,11 @@ namespace StalkerMUD.Server.Services
         event ActorChanged? OnActorChanged;
     }
 
-    public class Room<T> : IRoom<T>
+    public class Room : IRoom
     {
         private class Actor
         {
-            public T Id { get; set; }
+            public int Id { get; set; }
 
             public int Hp { get; set; }
 
@@ -41,35 +40,37 @@ namespace StalkerMUD.Server.Services
             public FightParametersResponse Parameters { get; set; }
         }
 
-        private readonly Dictionary<T, Actor> _actors = new();
-        private readonly List<T> _moveQueue = new();
+        private readonly Dictionary<int, Actor> _actors = new();
+        private readonly List<int> _moveQueue = new();
 
-        public T CurrentActor => _moveQueue.First();
+        public int CurrentActor => _moveQueue.First();
 
-        public T? Winner { get; private set; }
+        public int? Winner { get; private set; }
 
         private List<ActorResponse> _actorResponses = new();
 
-        public event IRoom<T>.Message? OnMessage;
-        public event IRoom<T>.ActorChanged? OnActorChanged;
+        public event IRoom.Message? OnMessage;
+        public event IRoom.ActorChanged? OnActorChanged;
 
         public IReadOnlyCollection<ActorResponse> Actors => _actorResponses;
 
-        public ActorResponse Add(T id, int command, FightParametersResponse parameters)
+        private int _idCounter = 0;
+
+        public ActorResponse Add(int command, FightParametersResponse parameters)
         {
             var actor = new Actor()
             {
-                Id = id,
+                Id = _idCounter++,
                 Hp = parameters.MaxHP,
                 Command = command,
                 Parameters = parameters,
             };
-            _actors.Add(id, actor);
-            _moveQueue.Add(id);
+            _actors.Add(actor.Id, actor);
+            _moveQueue.Add(actor.Id);
 
             var response = new ActorResponse()
             {
-                Id = id.GetHashCode(),
+                Id = actor.Id,
                 Hp = actor.Hp,
                 MaxHp = parameters.MaxHP,
                 Command = command,
@@ -95,7 +96,7 @@ namespace StalkerMUD.Server.Services
             ShiftMoveQueue();
         }
 
-        private void Attack(T currentActorId)
+        private void Attack(int currentActorId)
         {
             var actor = _actors[currentActorId];
             var target = _actors.Values.First(x => x.Command != actor.Command);
@@ -132,5 +133,7 @@ namespace StalkerMUD.Server.Services
             _moveQueue.Add(_moveQueue.First());
             _moveQueue.RemoveAt(0);
         }
+
+        
     }
 }
