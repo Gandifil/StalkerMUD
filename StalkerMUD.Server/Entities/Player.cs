@@ -29,7 +29,6 @@ namespace StalkerMUD.Server.Entities
                 Items.Add(itemId, new ItemPack { Id = itemId, Count = 1 });
         }
 
-        [BsonRef]
         public Attributes Attributes { get; set; } = new();
     }
 }

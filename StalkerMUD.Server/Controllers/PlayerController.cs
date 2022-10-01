@@ -86,7 +86,7 @@ namespace StalkerMUD.Server.Controllers
 
         [HttpPost]
         [Route("upgrade")]
-        public async Task Buy([FromBody] UpgradeRequest upgradeRequest)
+        public async Task UpgradeAsync([FromBody] UpgradeRequest upgradeRequest)
         {
             int userId = GetUserId();
             var user = await _users.GetAsync(userId);
