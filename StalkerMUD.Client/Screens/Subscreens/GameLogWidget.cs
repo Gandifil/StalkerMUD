@@ -20,7 +20,25 @@ namespace StalkerMUD.Client.Screens.Subscreens
 
         public async Task Show()
         {
-            _logs.TakeLast(_lineCount).ToList().ForEach(x => Console.WriteLine(x));
+            _logs.Select((x, i) => (x, i)).TakeLast(_lineCount)
+                .ToList().ForEach(x => ColoredWriteLine(x.i, x.x));
+        }
+
+        private static readonly ConsoleColor COLOR = ConsoleColor.Yellow;
+
+        private void ColoredWriteLine(int index, string str)
+        {
+            str = $"{index}: {str}";
+            var current = Console.ForegroundColor;
+
+            foreach (var substr in str.Split(new char[] { '[', ']' }))
+            {
+                Console.Write(substr);
+                Console.ForegroundColor = Console.ForegroundColor == COLOR ? current : COLOR;
+            }
+
+            Console.ForegroundColor = current;
+            Console.WriteLine();
         }
     }
 }
