@@ -40,7 +40,7 @@ namespace StalkerMUD.Server.Hubs
             foreach (var actorResponse in _room.Actors)
                 await Clients.Caller.AddActorAsync(actorResponse);
 
-            var actor = _room.Add(PLAYER_COMMAND,
+            var actor = _room.Add(PLAYER_COMMAND, false,
                 await _paramatersCalculator.GetForAsync(await _users.GetAsync(GetUserId())));
 
             roomIdConnectionId[actor.Id] = Context.ConnectionId;
@@ -50,7 +50,7 @@ namespace StalkerMUD.Server.Hubs
 
             if (isRoomNull)
             {
-                await Clients.Caller.SelectActionAsync();
+                await SendSelectAction();
             }
 
             _room.OnMessage -= OnMessage;
@@ -70,7 +70,7 @@ namespace StalkerMUD.Server.Hubs
         private async Task InitializeRoom()
         {
             _room = new Room();
-            _room.Add(MOB_COMMAND, 
+            _room.Add(MOB_COMMAND, true,
                 await _paramatersCalculator.GetForAsync(await _mobs.GetAsync(1)));
         }
 
@@ -89,7 +89,7 @@ namespace StalkerMUD.Server.Hubs
             _room.OnMessage += OnMessage;
             _room.OnActorChanged += OnActorChanged;
 
-            if ((int)Context.Items["id"] == _room?.CurrentActor)
+            if (roomIdConnectionId[_room?.CurrentActor ?? 0] == Context.ConnectionId)
                 _room.Do(RoomAction.Attack);
 
             await SendSelectAction();
@@ -106,7 +106,7 @@ namespace StalkerMUD.Server.Hubs
 
         public async Task Skip()
         {
-            if ((int)Context.Items["id"] == _room?.CurrentActor)
+            if (roomIdConnectionId[_room?.CurrentActor ?? 0] == Context.ConnectionId)
                 _room.Do(RoomAction.Skip);
 
             await SendSelectAction();

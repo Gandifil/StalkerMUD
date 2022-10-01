@@ -10,7 +10,7 @@ namespace StalkerMUD.Server.Services
 
     public interface IRoom
     {
-        ActorResponse Add(int command, FightParametersResponse parameters);
+        ActorResponse Add(int command, bool aiEnabled, FightParametersResponse parameters);
 
         void Do(RoomAction action);
 
@@ -37,6 +37,8 @@ namespace StalkerMUD.Server.Services
 
             public int Command { get; set; }
 
+            public bool AiEnabled { get; set; }
+
             public FightParametersResponse Parameters { get; set; }
         }
 
@@ -56,17 +58,21 @@ namespace StalkerMUD.Server.Services
 
         private int _idCounter = 0;
 
-        public ActorResponse Add(int command, FightParametersResponse parameters)
+        public ActorResponse Add(int command, bool aiEnabled, FightParametersResponse parameters)
         {
             var actor = new Actor()
             {
                 Id = _idCounter++,
                 Hp = parameters.MaxHP,
                 Command = command,
+                AiEnabled = aiEnabled,
                 Parameters = parameters,
             };
+            if (aiEnabled)
+                _moveQueue.Add(actor.Id);
+            else
+                _moveQueue.Insert(_actors.Values.All(x => x.AiEnabled) ? 0 : 1, actor.Id);
             _actors.Add(actor.Id, actor);
-            _moveQueue.Add(actor.Id);
 
             var response = new ActorResponse()
             {
@@ -130,10 +136,20 @@ namespace StalkerMUD.Server.Services
 
         private void ShiftMoveQueue()
         {
+            while(true)
+            {
+                TurnQueue();
+                if (_actors[CurrentActor].AiEnabled)
+                    Attack(CurrentActor);
+                else
+                    return;
+            }
+        }
+
+        private void TurnQueue()
+        {
             _moveQueue.Add(_moveQueue.First());
             _moveQueue.RemoveAt(0);
         }
-
-        
     }
 }
