@@ -49,12 +49,10 @@ namespace StalkerMUD.Server.Services
 
         public int? Winner { get; private set; }
 
-        private List<ActorResponse> _actorResponses = new();
-
         public event IRoom.Message? OnMessage;
         public event IRoom.ActorChanged? OnActorChanged;
 
-        public IReadOnlyCollection<ActorResponse> Actors => _actorResponses;
+        public IReadOnlyCollection<ActorResponse> Actors => _actors.Values.Select(GetActorResponse).ToList();
 
         private int _idCounter = 0;
 
@@ -73,17 +71,19 @@ namespace StalkerMUD.Server.Services
             else
                 _moveQueue.Insert(_actors.Values.All(x => x.AiEnabled) ? 0 : 1, actor.Id);
             _actors.Add(actor.Id, actor);
+            return GetActorResponse(actor);
+        }
 
-            var response = new ActorResponse()
+        private static ActorResponse GetActorResponse(Actor actor)
+        {
+            return new ActorResponse()
             {
                 Id = actor.Id,
                 Hp = actor.Hp,
-                MaxHp = parameters.MaxHP,
-                Command = command,
-                Name = parameters.Name,
+                MaxHp = actor.Parameters.MaxHP,
+                Command = actor.Command,
+                Name = actor.Parameters.Name,
             };
-            _actorResponses.Add(response);
-            return response;
         }
 
         public void Do(RoomAction action)
