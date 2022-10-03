@@ -46,7 +46,6 @@ namespace StalkerMUD.Server.Hubs
             roomIdConnectionId[actor.Id] = Context.ConnectionId;
             var allClients = Clients.All;
             await allClients.AddActorAsync(actor);
-            await allClients.SendMessageAsync("Hello, World");
 
             if (isRoomNull)
             {
