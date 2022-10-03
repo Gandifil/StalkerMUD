@@ -33,11 +33,24 @@ namespace StalkerMUD.Client.Screens.Subscreens
             {
                 if ((lastCommand ?? actor.Command) != actor.Command)
                     Console.Write('|');
+                var current = Console.ForegroundColor;
+                Console.ForegroundColor = GetHpColor(actor.Hp, actor.MaxHp);
                 Console.Write(GetHpBar(actor.Hp, actor.MaxHp));
+                Console.ForegroundColor = current;
                 Console.Write('|');
                 lastCommand = actor.Command;
             }
             Console.WriteLine();
+        }
+
+        private ConsoleColor GetHpColor(int hp, int maxHp)
+        {
+            var rate = hp * 100 / maxHp;
+            if (rate > 80) return ConsoleColor.Green;
+            if (rate > 60) return ConsoleColor.DarkGreen;
+            if (rate > 40) return ConsoleColor.DarkYellow;
+            if (rate > 20) return ConsoleColor.Red;
+            return ConsoleColor.DarkRed;
         }
 
         private string GetHpBar(int hp, int maxHp)

@@ -19,8 +19,16 @@ namespace StalkerMUD.Client.Screens
         {
             _connection = connection;
             _connection.On<ActorResponse>("addActor", OnAddActor);
+            _connection.On<ActorChangeResponse>("changeActor", onChangeActor);
             _connection.On("selectAction", OnSelectAction);
             _connection.On<string>("message", OnMessage);
+        }
+
+        private void onChangeActor(ActorChangeResponse obj)
+        {
+            var actor = _actors.Find(x => x.Id == obj.Id);
+            if (obj.Type == ActorChangeResponse.ParameterType.Hp)
+                actor.Hp = obj.Value;
         }
 
         public override async Task Show()
